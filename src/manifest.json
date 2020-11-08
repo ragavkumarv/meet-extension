@@ -1,5 +1,6 @@
 {
-  "name": "Chrome Extension with React & Webpack",
+  "name": "Meet extension",
+  "key":"<Key to be added>",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
@@ -25,5 +26,13 @@
     "icon-34.png"
   ],
   "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "oauth2": {
+    "client_id":"<Key to be added>", 
+    "scopes": ["https://www.googleapis.com/auth/calendar"]
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "permissions": [
+    "identity",
+    "identity.email"
+  ]
 }
