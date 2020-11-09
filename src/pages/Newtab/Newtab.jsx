@@ -4,20 +4,23 @@ import { Button } from '@material-ui/core';
 import './Newtab.css';
 import './Newtab.scss';
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(timezone);
 
 const Newtab = () => {
   const [dateTime, setDateTime] = useState(new Date());
-  let authToken;
+  const [meetLink, setMeetLink] = useState('');
+  const [authToken, setAuthToken] = useState('');
 
   useEffect(() => {
     chrome.identity.getAuthToken({ interactive: true }, function (token) {
-      console.log(token);
-      authToken = token;
+      setAuthToken(token);
     });
   }, []);
 
   const meetNow = () => {
     console.log('meetNow');
+    console.log(authToken);
     const event = {
       summary: 'Meeting',
       start: {
@@ -49,6 +52,7 @@ const Newtab = () => {
       .then((response) => response.json())
       .then(function (data) {
         console.log(data);
+        setMeetLink(data.hangoutLink);
       });
   };
 
@@ -62,6 +66,7 @@ const Newtab = () => {
           </Button>
           <Button color="secondary">Schedule</Button>
         </div>
+        <p>{meetLink || 'Start to Meet'}</p>
       </header>
     </div>
   );
