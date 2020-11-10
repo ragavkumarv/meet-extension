@@ -108,8 +108,8 @@ const Newtab = () => {
 
   return (
     <div className="App">
-      <header>
-        <form className="App-header" noValidate autoComplete="off" error>
+      <header className="wrapper">
+        {/* <form className="App-header" noValidate autoComplete="off" error>
           <FormControl>
             <InputLabel>Title</InputLabel>
             <Input
@@ -119,15 +119,17 @@ const Newtab = () => {
               aria-describedby="component-error-text"
             />
           </FormControl>
-        </form>
-        <Button
-          color="secondary"
-          onClick={() => setMoreOptions((prev) => !prev)}
-        >
-          More Options
-        </Button>
+        </form> */}
+        <TextField
+          label="Title"
+          type="input"
+          value={meetTitle}
+          className="form__title"
+          onChange={(e) => setMeetTitle(e.target.value)}
+          // className={classes.textField}
+        />
         {moreOptions && (
-          <div>
+          <>
             <TextField
               id="datetime-local"
               label="From"
@@ -148,12 +150,18 @@ const Newtab = () => {
                 shrink: true,
               }}
             />
-          </div>
+          </>
         )}
+        <Button
+          color="secondary"
+          onClick={() => setMoreOptions((prev) => !prev)}
+        >
+          More Options
+        </Button>
         <Button color="primary" onClick={meetNow}>
           Meet now
         </Button>
-        <p>{meetLink || 'Start to Meet'}</p>
+        <p className="form__meet-link">{meetLink || 'Start to Meet'}</p>
       </header>
     </div>
   );
