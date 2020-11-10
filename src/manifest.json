@@ -1,6 +1,6 @@
 {
   "name": "Meet extension",
-  "key":"<Key to be added>",
+  "key": "<Key to be added>",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
@@ -15,11 +15,13 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-    "js": ["contentScript.bundle.js"],
-    "css": ["content.styles.css"]
-  }],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["contentScript.bundle.js"],
+      "css": ["content.styles.css"]
+    }
+  ],
   "web_accessible_resources": [
     "content.styles.css",
     "icon-128.png",
@@ -27,12 +29,12 @@
   ],
   "manifest_version": 2,
   "oauth2": {
-    "client_id":"<Key to be added>", 
-    "scopes": ["https://www.googleapis.com/auth/calendar"]
+    "client_id": "<Key to be added>",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "permissions": [
-    "identity",
-    "identity.email"
-  ]
+  "permissions": ["identity", "identity.email"]
 }
