@@ -31,7 +31,7 @@ const Newtab = () => {
       (message, sender, sendResponse) => {
         if (message.type === LOAD_MEET) {
           console.log(meetTitle, authToken);
-          dispatch(createMeet({ meetTitle }));
+          dispatch(createMeet({ meetTitle, copy: true }));
         }
       }
     );
@@ -58,8 +58,8 @@ const Newtab = () => {
       <Card>
         <CardHeader
           avatar={
-            <div onClick={handleChangeUser}>
-              <Tooltip title={userInfo.email} placement="right">
+            <div onClick={handleChangeUser} style={{ cursor: 'pointer' }}>
+              <Tooltip title="Switch account" placement="right">
                 <Badge
                   overlap="circle"
                   anchorOrigin={{

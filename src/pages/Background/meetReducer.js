@@ -27,6 +27,7 @@ export const meetReducer = (state = initialState, { type, payload }) => {
     case SET_AUTH_TOKEN:
       return { ...state, authToken: payload, isLoading: false };
     case SET_MEET_LINK:
+      document.execCommand(payload);
       return { ...state, meetLink: payload, isLoading: false };
     case SET_ERROR_MSG:
       return { ...state, meetLink: payload, isLoading: false };
@@ -39,7 +40,10 @@ export const meetReducer = (state = initialState, { type, payload }) => {
 const getTimeZone = () => dayjs.tz.guess();
 const generateRandomRequestId = () => Math.random().toString(36).substring(7);
 
-export const createMeet = ({ meetTitle }) => async (dispatch, getState) => {
+export const createMeet = ({ meetTitle, copy }) => async (
+  dispatch,
+  getState
+) => {
   dispatch({ type: LOADING });
 
   const event = {
@@ -77,6 +81,10 @@ export const createMeet = ({ meetTitle }) => async (dispatch, getState) => {
         return data;
       });
 
+    if (copy) {
+      copyToClipBoard(hangoutLink);
+    }
+
     dispatch(setMeetLink(hangoutLink));
   } catch {
     console.log('Error occured');
@@ -95,3 +103,15 @@ export const getUserInfo = () => async (dispatch, getState) => {
     dispatch(setUserInfo(info));
   });
 };
+
+function copyToClipBoard(hangoutLink) {
+  navigator.clipboard
+    .writeText(hangoutLink)
+    .then(() => {
+      console.log('copied');
+      // Success!
+    })
+    .catch((err) => {
+      console.log('Something went wrong', err);
+    });
+}
