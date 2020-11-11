@@ -8,6 +8,8 @@ import {
   SET_AUTH_TOKEN,
   SET_MEET_LINK,
   LOAD_MEET,
+  SET_ERROR_MSG,
+  setErrorMsg,
 } from './actions';
 dayjs.extend(timezone);
 
@@ -24,10 +26,12 @@ const initialState = { isLoading: false, meetLink: '', authToken: '' };
 export const meetReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case LOADING:
-      return { ...state, meetLink: 'Loading...', isLoading: true };
+      return { ...state, isLoading: true };
     case SET_AUTH_TOKEN:
       return { ...state, authToken: payload, isLoading: false };
     case SET_MEET_LINK:
+      return { ...state, meetLink: payload, isLoading: false };
+    case SET_ERROR_MSG:
       return { ...state, meetLink: payload, isLoading: false };
     default:
       return state;
@@ -58,22 +62,27 @@ export const createMeet = ({ meetTitle }) => async (dispatch, getState) => {
     },
   };
 
-  const { hangoutLink } = await fetch(
-    'https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendNotifications=true',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${getState().authToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(event),
-    }
-  )
-    .then((response) => response.json())
-    .then(function (data) {
-      console.log(data);
-      return data;
-    });
+  try {
+    const { hangoutLink } = await fetch(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendNotifications=true',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${getState().authToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      }
+    )
+      .then((response) => response.json())
+      .then(function (data) {
+        console.log(data);
+        return data;
+      });
 
-  dispatch(setMeetLink(hangoutLink));
+    dispatch(setMeetLink(hangoutLink));
+  } catch {
+    console.log('Error occured');
+    dispatch(setErrorMsg());
+  }
 };

@@ -15,10 +15,10 @@ const Newtab = () => {
   const authToken = useSelector((state) => state.authToken);
   const isLoading = useSelector((state) => state.isLoading);
   const [meetTitle, setMeetTitle] = useState('Meeting');
-  const [moreOptions, setMoreOptions] = useState(true);
+  const [moreOptions, setMoreOptions] = useState(false);
   const [userInfo, setUserInfo] = useState({ email: '', picture: '' });
 
-  useEffect(() => {
+  const createMeetOnShortcut = () => {
     window.chrome.runtime.onMessage.addListener(
       (message, sender, sendResponse) => {
         if (message.type === LOAD_MEET) {
@@ -27,6 +27,10 @@ const Newtab = () => {
         }
       }
     );
+  };
+
+  useEffect(() => {
+    createMeetOnShortcut();
 
     chrome.identity.getAuthToken({ interactive: true }, function (token) {
       dispatch(setAuthToken(token));
@@ -44,7 +48,7 @@ const Newtab = () => {
     <div className="App">
       <header className="wrapper">
         <Tooltip title={userInfo.email} placement="right">
-          <Avatar alt="Remy Sharp" src={userInfo.picture} />
+          <Avatar alt="Profile Pic" src={userInfo.picture} />
         </Tooltip>
         <TextField
           label="Title"

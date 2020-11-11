@@ -6,10 +6,8 @@ import './index.css';
 import { store } from '../Background/store';
 
 render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Newtab />
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <Newtab />
+  </Provider>,
   window.document.querySelector('#app-container')
 );
