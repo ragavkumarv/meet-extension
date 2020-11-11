@@ -36,11 +36,11 @@
     ]
   },
   "commands": {
-    "toggle-feature": {
+    "create-meeting": {
       "suggested_key": {
         "default": "Alt+C"
       },
-      "description": "New Meeting"
+      "description": "Create a new meeting"
     },
     "_execute_browser_action": {
       "suggested_key": {
