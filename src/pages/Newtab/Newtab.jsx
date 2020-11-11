@@ -4,7 +4,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadMeet, loadShortCut } from '../Background/index';
+import { createMeet, loadShortCut } from '../Background/index';
+import { setAuthToken, LOAD_MEET } from '../Background/actions';
 import './Newtab.css';
 import './Newtab.scss';
 
@@ -12,6 +13,7 @@ const Newtab = () => {
   const dispatch = useDispatch();
   const meetLink = useSelector((state) => state.meetLink);
   const authToken = useSelector((state) => state.authToken);
+  const isLoading = useSelector((state) => state.isLoading);
   const [meetTitle, setMeetTitle] = useState('Meeting');
   const [moreOptions, setMoreOptions] = useState(true);
   const [userInfo, setUserInfo] = useState({ email: '', picture: '' });
@@ -19,15 +21,15 @@ const Newtab = () => {
   useEffect(() => {
     window.chrome.runtime.onMessage.addListener(
       (message, sender, sendResponse) => {
-        if (message.type === 'LOAD_MEET') {
+        if (message.type === LOAD_MEET) {
           console.log(meetTitle, authToken);
-          dispatch(loadMeet({ meetTitle }));
+          dispatch(createMeet({ meetTitle }));
         }
       }
     );
 
     chrome.identity.getAuthToken({ interactive: true }, function (token) {
-      dispatch({ type: 'SET_AUTH_TOKEN', payload: token });
+      dispatch(setAuthToken(token));
       fetch(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
       )
@@ -84,11 +86,10 @@ const Newtab = () => {
         </Button>
         <Button
           color="primary"
-          onClick={() => dispatch(loadMeet({ meetTitle }))}
+          onClick={() => dispatch(createMeet({ meetTitle }))}
         >
-          {meetLink === 'Loading' ? <CircularProgress /> : 'Meet now'}
+          {isLoading ? <CircularProgress /> : 'Meet now'}
         </Button>
-        {/* <p className="form__meet-link">{meetLink || 'Start to Meet'}</p> */}
         <p className="form__meet-link">{meetLink}</p>
       </header>
     </div>

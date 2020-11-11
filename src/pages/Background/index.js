@@ -2,47 +2,58 @@ import '../../assets/img/icon-34.png';
 import '../../assets/img/icon-128.png';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
+import {
+  setMeetLink,
+  LOADING,
+  SET_AUTH_TOKEN,
+  SET_MEET_LINK,
+  LOAD_MEET,
+} from './actions';
 dayjs.extend(timezone);
 
 chrome.commands.onCommand.addListener(function (command) {
   console.log('Command:', command);
   if (command === 'create-meeting')
     chrome.runtime.sendMessage({
-      type: 'LOAD_MEET',
+      type: LOAD_MEET,
     });
 });
 
-const initialState = { meetLink: '', authToken: '' };
+const initialState = { isLoading: false, meetLink: '', authToken: '' };
 
-export const meetReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'loading':
-      return { ...state, meetLink: 'Loading...' };
-    case 'SET_AUTH_TOKEN':
-      return { ...state, authToken: action.payload };
-    case 'SET_MEET_LINK':
-      return { ...state, meetLink: action.payload };
+export const meetReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case LOADING:
+      return { ...state, meetLink: 'Loading...', isLoading: true };
+    case SET_AUTH_TOKEN:
+      return { ...state, authToken: payload, isLoading: false };
+    case SET_MEET_LINK:
+      return { ...state, meetLink: payload, isLoading: false };
     default:
       return state;
   }
 };
 
-export const loadMeet = ({ meetTitle }) => async (dispatch, getState) => {
-  dispatch({ type: 'loading' });
+const getTimeZone = () => dayjs.tz.guess();
+
+const generateRandomRequestId = () => Math.random().toString(36).substring(7);
+
+export const createMeet = ({ meetTitle }) => async (dispatch, getState) => {
+  dispatch({ type: LOADING });
 
   const event = {
     summary: meetTitle || '(No Title)',
     start: {
       dateTime: dayjs().toISOString(),
-      timeZone: dayjs.tz.guess(),
+      timeZone: getTimeZone(),
     },
     end: {
       dateTime: dayjs().add(30, 'minutes').toISOString(),
-      timeZone: dayjs.tz.guess(),
+      timeZone: getTimeZone(),
     },
     conferenceData: {
       createRequest: {
-        requestId: Math.random().toString(36).substring(7),
+        requestId: generateRandomRequestId(),
       },
     },
   };
@@ -64,5 +75,5 @@ export const loadMeet = ({ meetTitle }) => async (dispatch, getState) => {
       return data;
     });
 
-  dispatch({ type: 'SET_MEET_LINK', payload: hangoutLink });
+  dispatch(setMeetLink(hangoutLink));
 };
