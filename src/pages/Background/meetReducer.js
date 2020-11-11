@@ -1,15 +1,23 @@
 import dayjs from 'dayjs';
-import {
-  setMeetLink,
-  LOADING,
-  SET_AUTH_TOKEN,
-  SET_MEET_LINK,
-  SET_ERROR_MSG,
-  setErrorMsg,
-} from './actions';
 import timezone from 'dayjs/plugin/timezone';
+import {
+  LOADING,
+  setAuthToken,
+  setErrorMsg,
+  setMeetLink,
+  setUserInfo,
+  SET_AUTH_TOKEN,
+  SET_ERROR_MSG,
+  SET_MEET_LINK,
+  SET_USER_INFO,
+} from './actions';
 
-const initialState = { isLoading: false, meetLink: '', authToken: '' };
+const initialState = {
+  isLoading: false,
+  meetLink: '',
+  authToken: '',
+  user: { email: '', picture: '' },
+};
 dayjs.extend(timezone);
 
 export const meetReducer = (state = initialState, { type, payload }) => {
@@ -22,6 +30,8 @@ export const meetReducer = (state = initialState, { type, payload }) => {
       return { ...state, meetLink: payload, isLoading: false };
     case SET_ERROR_MSG:
       return { ...state, meetLink: payload, isLoading: false };
+    case SET_USER_INFO:
+      return { ...state, user: payload };
     default:
       return state;
   }
@@ -72,4 +82,16 @@ export const createMeet = ({ meetTitle }) => async (dispatch, getState) => {
     console.log('Error occured');
     dispatch(setErrorMsg());
   }
+};
+
+export const getUserInfo = () => async (dispatch, getState) => {
+  chrome.identity.getAuthToken({ interactive: true }, async function (token) {
+    dispatch(setAuthToken(token));
+
+    const info = await fetch(
+      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
+    ).then((res) => res.json());
+
+    dispatch(setUserInfo(info));
+  });
 };

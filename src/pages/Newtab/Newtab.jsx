@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createMeet } from '../Background/meetReducer';
+import { createMeet, getUserInfo } from '../Background/meetReducer';
 import { setAuthToken, LOAD_MEET } from '../Background/actions';
 import './Newtab.css';
 import './Newtab.scss';
@@ -16,7 +16,7 @@ const Newtab = () => {
   const isLoading = useSelector((state) => state.isLoading);
   const [meetTitle, setMeetTitle] = useState('Meeting');
   const [moreOptions, setMoreOptions] = useState(false);
-  const [userInfo, setUserInfo] = useState({ email: '', picture: '' });
+  const userInfo = useSelector((state) => state.user);
 
   const createMeetOnShortcut = () => {
     window.chrome.runtime.onMessage.addListener(
@@ -31,17 +31,7 @@ const Newtab = () => {
 
   useEffect(() => {
     createMeetOnShortcut();
-
-    chrome.identity.getAuthToken({ interactive: true }, function (token) {
-      dispatch(setAuthToken(token));
-      fetch(
-        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
-      )
-        .then((res) => res.json())
-        .then((info) => {
-          setUserInfo(info);
-        });
-    });
+    dispatch(getUserInfo());
   }, []);
 
   return (
