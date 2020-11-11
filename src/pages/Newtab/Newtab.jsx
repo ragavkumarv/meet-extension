@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createMeet, loadShortCut } from '../Background/index';
+import { createMeet } from '../Background/meetReducer';
 import { setAuthToken, LOAD_MEET } from '../Background/actions';
 import './Newtab.css';
 import './Newtab.scss';
