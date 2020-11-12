@@ -1,7 +1,5 @@
 import DayJsUtils from '@date-io/dayjs';
 import { Button, TextField } from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
-import Badge from '@material-ui/core/Badge';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,12 +7,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
-import Tooltip from '@material-ui/core/Tooltip';
 import SettingsIcon from '@material-ui/icons/Settings';
-import {
-  KeyboardDateTimePicker,
-  MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_MEET, setAuthToken } from '../Background/actions';
@@ -23,9 +17,8 @@ import {
   getUserInfo,
   meetDuration,
 } from '../Background/meetReducer';
-import ChipInput from './ChipInput';
 import DetailedMeetForm from './DetailedMeetForm';
-import SwitchUserIcon from './SwitchUserIcon';
+import UserProfilePic from './UserProfilePic';
 import './Newtab.css';
 import './Newtab.scss';
 
@@ -115,20 +108,10 @@ const Newtab = () => {
         <Card>
           <CardHeader
             avatar={
-              <div onClick={handleChangeUser} style={{ cursor: 'pointer' }}>
-                <Tooltip title="Switch account" placement="right">
-                  <Badge
-                    overlap="circle"
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'right',
-                    }}
-                    badgeContent={<SwitchUserIcon />}
-                  >
-                    <Avatar alt="Profile Pic" src={userInfo.picture} />
-                  </Badge>
-                </Tooltip>
-              </div>
+              <UserProfilePic
+                handleChangeUser={handleChangeUser}
+                userInfo={userInfo}
+              />
             }
             action={
               <IconButton aria-label="settings">
@@ -144,7 +127,6 @@ const Newtab = () => {
               value={meetTitle}
               className="form__title"
               onChange={(e) => setMeetTitle(e.target.value)}
-              // className={classes.textField}
             />
             {moreOptions && (
               <DetailedMeetForm
@@ -156,16 +138,6 @@ const Newtab = () => {
                 setGuests={setGuests}
               />
             )}
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              open={open}
-              autoHideDuration={1000}
-              onClose={handleClose}
-              message={meetLink}
-            />
           </CardContent>
           <CardActions>
             <Button color="secondary" onClick={toggleMoreOptions}>
@@ -190,6 +162,16 @@ const Newtab = () => {
           </CardActions>
         </Card>
       </div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={open}
+        autoHideDuration={1000}
+        onClose={handleClose}
+        message={meetLink}
+      />
     </MuiPickersUtilsProvider>
   );
 };
