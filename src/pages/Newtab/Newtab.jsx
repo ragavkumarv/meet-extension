@@ -11,7 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingsIcon from '@material-ui/icons/Settings';
-import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import {
   KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
@@ -26,6 +25,7 @@ import {
 } from '../Background/meetReducer';
 import ChipInput from './ChipInput';
 import DetailedMeetForm from './DetailedMeetForm';
+import SwitchUserIcon from './SwitchUserIcon';
 import './Newtab.css';
 import './Newtab.scss';
 
@@ -95,6 +95,20 @@ const Newtab = () => {
     if (meetLink) setOpen(true);
   }, [meetLink]);
 
+  const toggleMoreOptions = () => {
+    console.log(guests);
+    setMoreOptions((prev) => !prev);
+    setGuests(initialGuests);
+    if (moreOptions) {
+      handleFromDateChange(null);
+      handleToDateChange(null);
+    } else {
+      const { start, end } = meetDuration(defaultMeetDuration);
+      handleFromDateChange(start);
+      handleToDateChange(end);
+    }
+  };
+
   return (
     <MuiPickersUtilsProvider utils={DayJsUtils}>
       <div className="App">
@@ -109,16 +123,7 @@ const Newtab = () => {
                       vertical: 'bottom',
                       horizontal: 'right',
                     }}
-                    badgeContent={
-                      <SwapHorizIcon
-                        style={{
-                          backgroundColor: '#FFFF',
-                          borderRadius: '50%',
-                          boxShadow:
-                            '0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12)',
-                        }}
-                      />
-                    }
+                    badgeContent={<SwitchUserIcon />}
                   >
                     <Avatar alt="Profile Pic" src={userInfo.picture} />
                   </Badge>
@@ -163,22 +168,7 @@ const Newtab = () => {
             />
           </CardContent>
           <CardActions>
-            <Button
-              color="secondary"
-              onClick={() => {
-                console.log(guests);
-                setMoreOptions((prev) => !prev);
-                setGuests(initialGuests);
-                if (moreOptions) {
-                  handleFromDateChange(null);
-                  handleToDateChange(null);
-                } else {
-                  const { start, end } = meetDuration(defaultMeetDuration);
-                  handleFromDateChange(start);
-                  handleToDateChange(end);
-                }
-              }}
-            >
+            <Button color="secondary" onClick={toggleMoreOptions}>
               {!moreOptions ? 'More' : 'Less'} Options
             </Button>
             <Button
