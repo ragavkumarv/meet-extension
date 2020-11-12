@@ -13,17 +13,34 @@ import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_MEET, setAuthToken } from '../Background/actions';
-import { createMeet, getUserInfo } from '../Background/meetReducer';
+import {
+  createMeet,
+  getUserInfo,
+  meetDuration,
+} from '../Background/meetReducer';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDateTimePicker,
+} from '@material-ui/pickers';
+import dayjs from 'dayjs';
+import DayJsUtils from '@date-io/dayjs';
+// import DateFnsUtils from '@date-io/date-fns';
+import Snackbar from '@material-ui/core/Snackbar';
+import ChipInput from './ChipInput';
 import './Newtab.css';
 import './Newtab.scss';
 
 const Newtab = () => {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
   const meetLink = useSelector((state) => state.meetLink);
   const authToken = useSelector((state) => state.authToken);
   const isLoading = useSelector((state) => state.isLoading);
   const [meetTitle, setMeetTitle] = useState('Meeting');
   const [moreOptions, setMoreOptions] = useState(false);
+  const { start, end } = meetDuration(30);
+  const [fromDate, handleFromDateChange] = useState(start);
+  const [toDate, handleToDateChange] = useState(end);
   const userInfo = useSelector((state) => state.user);
 
   const createMeetOnShortcut = () => {
@@ -48,99 +65,122 @@ const Newtab = () => {
     });
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   useEffect(() => {
     createMeetOnShortcut();
     dispatch(getUserInfo());
   }, []);
 
+  useEffect(() => {
+    if (meetLink) setOpen(true);
+  }, [meetLink]);
+
   return (
-    <div className="App">
-      <Card>
-        <CardHeader
-          avatar={
-            <div onClick={handleChangeUser} style={{ cursor: 'pointer' }}>
-              <Tooltip title="Switch account" placement="right">
-                <Badge
-                  overlap="circle"
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  badgeContent={
-                    <SwapHorizIcon
-                      style={{
-                        backgroundColor: '#FFFF',
-                        borderRadius: '50%',
-                        boxShadow:
-                          '0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12)',
-                      }}
-                    />
-                  }
-                >
-                  <Avatar alt="Profile Pic" src={userInfo.picture} />
-                </Badge>
-              </Tooltip>
-            </div>
-          }
-          action={
-            <IconButton aria-label="settings">
-              <SettingsIcon />
-            </IconButton>
-          }
-          title={userInfo.email}
-        />
-        <CardContent className="wrapper">
-          <TextField
-            label="Title"
-            type="input"
-            value={meetTitle}
-            className="form__title"
-            onChange={(e) => setMeetTitle(e.target.value)}
-            // className={classes.textField}
+    <MuiPickersUtilsProvider utils={DayJsUtils}>
+      <div className="App">
+        <Card>
+          <CardHeader
+            avatar={
+              <div onClick={handleChangeUser} style={{ cursor: 'pointer' }}>
+                <Tooltip title="Switch account" placement="right">
+                  <Badge
+                    overlap="circle"
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    badgeContent={
+                      <SwapHorizIcon
+                        style={{
+                          backgroundColor: '#FFFF',
+                          borderRadius: '50%',
+                          boxShadow:
+                            '0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12)',
+                        }}
+                      />
+                    }
+                  >
+                    <Avatar alt="Profile Pic" src={userInfo.picture} />
+                  </Badge>
+                </Tooltip>
+              </div>
+            }
+            action={
+              <IconButton aria-label="settings">
+                <SettingsIcon />
+              </IconButton>
+            }
+            title={userInfo.email}
           />
-          {moreOptions && (
-            <>
-              <TextField
-                id="datetime-local"
-                label="From"
-                type="datetime-local"
-                defaultValue="2017-05-24T10:30"
-                // className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <TextField
-                id="datetime-local"
-                label="To"
-                type="datetime-local"
-                defaultValue="2018-05-24T10:30"
-                // className={classes.textField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </>
-          )}
-          <p className="form__meet-link">{meetLink}</p>
-        </CardContent>
-        <CardActions>
-          <Button
-            color="secondary"
-            onClick={() => setMoreOptions((prev) => !prev)}
-          >
-            {!moreOptions ? 'More' : 'Less'} Options
-          </Button>
-          <Button
-            color="primary"
-            onClick={() => dispatch(createMeet({ meetTitle }))}
-            style={{ marginLeft: 'auto' }}
-          >
-            {isLoading ? <CircularProgress /> : 'Meet now'}
-          </Button>
-        </CardActions>
-      </Card>
-    </div>
+          <CardContent className="wrapper">
+            <TextField
+              label="Title"
+              type="input"
+              value={meetTitle}
+              className="form__title"
+              onChange={(e) => setMeetTitle(e.target.value)}
+              // className={classes.textField}
+            />
+            <ChipInput />
+            {moreOptions && (
+              <>
+                <KeyboardDateTimePicker
+                  variant="inline"
+                  ampm={true}
+                  label="From"
+                  value={fromDate}
+                  onChange={handleFromDateChange}
+                  onError={console.log}
+                  disablePast
+                  format="MMM DD, YYYY HH:mma"
+                />
+                <KeyboardDateTimePicker
+                  variant="inline"
+                  ampm={true}
+                  label="To"
+                  value={toDate}
+                  onChange={handleToDateChange}
+                  onError={console.log}
+                  disablePast
+                  format="MMM DD, YYYY HH:mma"
+                />
+              </>
+            )}
+            <Snackbar
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              open={open}
+              autoHideDuration={1000}
+              onClose={handleClose}
+              message={meetLink}
+            />
+          </CardContent>
+          <CardActions>
+            <Button
+              color="secondary"
+              onClick={() => setMoreOptions((prev) => !prev)}
+            >
+              {!moreOptions ? 'More' : 'Less'} Options
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => dispatch(createMeet({ meetTitle }))}
+              style={{ marginLeft: 'auto' }}
+            >
+              {isLoading ? <CircularProgress /> : 'Meet now'}
+            </Button>
+          </CardActions>
+        </Card>
+      </div>
+    </MuiPickersUtilsProvider>
   );
 };
 

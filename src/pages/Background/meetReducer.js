@@ -27,7 +27,6 @@ export const meetReducer = (state = initialState, { type, payload }) => {
     case SET_AUTH_TOKEN:
       return { ...state, authToken: payload, isLoading: false };
     case SET_MEET_LINK:
-      document.execCommand(payload);
       return { ...state, meetLink: payload, isLoading: false };
     case SET_ERROR_MSG:
       return { ...state, meetLink: payload, isLoading: false };
@@ -46,14 +45,16 @@ export const createMeet = ({ meetTitle, copy }) => async (
 ) => {
   dispatch({ type: LOADING });
 
+  const { start, end } = meetDuration(30);
+
   const event = {
     summary: meetTitle || '(No Title)',
     start: {
-      dateTime: dayjs().toISOString(),
+      dateTime: start,
       timeZone: getTimeZone(),
     },
     end: {
-      dateTime: dayjs().add(30, 'minutes').toISOString(),
+      dateTime: end,
       timeZone: getTimeZone(),
     },
     conferenceData: {
@@ -103,6 +104,13 @@ export const getUserInfo = () => async (dispatch, getState) => {
     dispatch(setUserInfo(info));
   });
 };
+
+export function meetDuration(mins) {
+  return {
+    start: dayjs().toISOString(),
+    end: dayjs().add(mins, 'minutes').toISOString(),
+  };
+}
 
 function copyToClipBoard(hangoutLink) {
   navigator.clipboard
