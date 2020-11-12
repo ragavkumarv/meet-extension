@@ -9,6 +9,7 @@
   margin: auto;
   min-width: 30vw;
   width: max-content;
+  max-width: 50vw;
 }
 
 .App-logo {
@@ -45,10 +46,8 @@
   gap: 2rem;
 }
 
-.form__title {
-  grid-column: 1/3;
-}
-
-.form__meet-link {
+.form__title,
+.form__meet-link,
+.form__add-guest {
   grid-column: 1/3;
 }

@@ -127,7 +127,6 @@ const Newtab = () => {
               onChange={(e) => setMeetTitle(e.target.value)}
               // className={classes.textField}
             />
-            <ChipInput />
             {moreOptions && (
               <>
                 <KeyboardDateTimePicker
@@ -150,6 +149,7 @@ const Newtab = () => {
                   disablePast
                   format="MMM DD, YYYY HH:mma"
                 />
+                <ChipInput />
               </>
             )}
             <Snackbar
