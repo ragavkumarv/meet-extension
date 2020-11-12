@@ -39,10 +39,13 @@ export const meetReducer = (state = initialState, { type, payload }) => {
 const getTimeZone = () => dayjs.tz.guess();
 const generateRandomRequestId = () => Math.random().toString(36).substring(7);
 
-export const createMeet = ({ meetTitle, copy }) => async (
-  dispatch,
-  getState
-) => {
+export const createMeet = ({
+  meetTitle,
+  copy,
+  fromDate,
+  toDate,
+  attendees,
+}) => async (dispatch, getState) => {
   dispatch({ type: LOADING });
 
   const { start, end } = meetDuration(30);
@@ -50,13 +53,14 @@ export const createMeet = ({ meetTitle, copy }) => async (
   const event = {
     summary: meetTitle || '(No Title)',
     start: {
-      dateTime: start,
+      dateTime: fromDate || start,
       timeZone: getTimeZone(),
     },
     end: {
-      dateTime: end,
+      dateTime: toDate || end,
       timeZone: getTimeZone(),
     },
+    attendees: attendees.map((attendee) => ({ email: attendee })),
     conferenceData: {
       createRequest: {
         requestId: generateRandomRequestId(),

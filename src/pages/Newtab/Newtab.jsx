@@ -1,3 +1,4 @@
+import DayJsUtils from '@date-io/dayjs';
 import { Button, TextField } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
@@ -7,9 +8,14 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import SettingsIcon from '@material-ui/icons/Settings';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import {
+  KeyboardDateTimePicker,
+  MuiPickersUtilsProvider,
+} from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_MEET, setAuthToken } from '../Background/actions';
@@ -18,14 +24,6 @@ import {
   getUserInfo,
   meetDuration,
 } from '../Background/meetReducer';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDateTimePicker,
-} from '@material-ui/pickers';
-import dayjs from 'dayjs';
-import DayJsUtils from '@date-io/dayjs';
-// import DateFnsUtils from '@date-io/date-fns';
-import Snackbar from '@material-ui/core/Snackbar';
 import ChipInput from './ChipInput';
 import './Newtab.css';
 import './Newtab.scss';
@@ -35,6 +33,7 @@ const initialGuests = {
   value: '',
   error: null,
 };
+const defaultMeetDuration = 30; // in mins
 
 const Newtab = () => {
   const dispatch = useDispatch();
@@ -44,9 +43,8 @@ const Newtab = () => {
   const isLoading = useSelector((state) => state.isLoading);
   const [meetTitle, setMeetTitle] = useState('Meeting');
   const [moreOptions, setMoreOptions] = useState(false);
-  const { start, end } = meetDuration(30);
-  const [fromDate, handleFromDateChange] = useState(start);
-  const [toDate, handleToDateChange] = useState(end);
+  const [fromDate, handleFromDateChange] = useState();
+  const [toDate, handleToDateChange] = useState();
   const userInfo = useSelector((state) => state.user);
   const [guests, setGuests] = useState(initialGuests);
 
@@ -55,7 +53,15 @@ const Newtab = () => {
       (message, sender, sendResponse) => {
         if (message.type === LOAD_MEET) {
           console.log(meetTitle, authToken);
-          dispatch(createMeet({ meetTitle, copy: true }));
+          dispatch(
+            createMeet({
+              meetTitle,
+              fromDate,
+              toDate,
+              attendees: guests.items,
+              copy: true,
+            })
+          );
         }
       }
     );
@@ -144,6 +150,7 @@ const Newtab = () => {
                   onChange={handleFromDateChange}
                   onError={console.log}
                   disablePast
+                  required
                   format="MMM DD, YYYY HH:mma"
                 />
                 <KeyboardDateTimePicker
@@ -154,6 +161,7 @@ const Newtab = () => {
                   onChange={handleToDateChange}
                   onError={console.log}
                   disablePast
+                  required
                   format="MMM DD, YYYY HH:mma"
                 />
                 <ChipInput state={guests} setState={setGuests} />
@@ -177,13 +185,30 @@ const Newtab = () => {
                 console.log(guests);
                 setMoreOptions((prev) => !prev);
                 setGuests(initialGuests);
+                if (moreOptions) {
+                  handleFromDateChange(null);
+                  handleToDateChange(null);
+                } else {
+                  const { start, end } = meetDuration(defaultMeetDuration);
+                  handleFromDateChange(start);
+                  handleToDateChange(end);
+                }
               }}
             >
               {!moreOptions ? 'More' : 'Less'} Options
             </Button>
             <Button
               color="primary"
-              onClick={() => dispatch(createMeet({ meetTitle }))}
+              onClick={() =>
+                dispatch(
+                  createMeet({
+                    meetTitle,
+                    fromDate,
+                    toDate,
+                    attendees: guests.items,
+                  })
+                )
+              }
               style={{ marginLeft: 'auto' }}
             >
               {isLoading ? <CircularProgress /> : 'Meet now'}
