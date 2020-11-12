@@ -15,13 +15,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChipInput = () => {
+const ChipInput = ({ state, setState }) => {
   const classes = useStyles();
-  const [state, setState] = useState({
-    items: [],
-    value: '',
-    error: null,
-  });
 
   const handleKeyDown = (evt) => {
     if (['Enter', 'Tab', ','].includes(evt.key)) {

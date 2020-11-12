@@ -30,6 +30,12 @@ import ChipInput from './ChipInput';
 import './Newtab.css';
 import './Newtab.scss';
 
+const initialGuests = {
+  items: [],
+  value: '',
+  error: null,
+};
+
 const Newtab = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -42,6 +48,7 @@ const Newtab = () => {
   const [fromDate, handleFromDateChange] = useState(start);
   const [toDate, handleToDateChange] = useState(end);
   const userInfo = useSelector((state) => state.user);
+  const [guests, setGuests] = useState(initialGuests);
 
   const createMeetOnShortcut = () => {
     window.chrome.runtime.onMessage.addListener(
@@ -149,7 +156,7 @@ const Newtab = () => {
                   disablePast
                   format="MMM DD, YYYY HH:mma"
                 />
-                <ChipInput />
+                <ChipInput state={guests} setState={setGuests} />
               </>
             )}
             <Snackbar
@@ -166,7 +173,11 @@ const Newtab = () => {
           <CardActions>
             <Button
               color="secondary"
-              onClick={() => setMoreOptions((prev) => !prev)}
+              onClick={() => {
+                console.log(guests);
+                setMoreOptions((prev) => !prev);
+                setGuests(initialGuests);
+              }}
             >
               {!moreOptions ? 'More' : 'Less'} Options
             </Button>
