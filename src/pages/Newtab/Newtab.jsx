@@ -25,6 +25,7 @@ import {
   meetDuration,
 } from '../Background/meetReducer';
 import ChipInput from './ChipInput';
+import DetailedMeetForm from './DetailedMeetForm';
 import './Newtab.css';
 import './Newtab.scss';
 
@@ -141,31 +142,14 @@ const Newtab = () => {
               // className={classes.textField}
             />
             {moreOptions && (
-              <>
-                <KeyboardDateTimePicker
-                  variant="inline"
-                  ampm={true}
-                  label="From"
-                  value={fromDate}
-                  onChange={handleFromDateChange}
-                  onError={console.log}
-                  disablePast
-                  required
-                  format="MMM DD, YYYY HH:mma"
-                />
-                <KeyboardDateTimePicker
-                  variant="inline"
-                  ampm={true}
-                  label="To"
-                  value={toDate}
-                  onChange={handleToDateChange}
-                  onError={console.log}
-                  disablePast
-                  required
-                  format="MMM DD, YYYY HH:mma"
-                />
-                <ChipInput state={guests} setState={setGuests} />
-              </>
+              <DetailedMeetForm
+                fromDate={fromDate}
+                handleFromDateChange={handleFromDateChange}
+                toDate={toDate}
+                handleToDateChange={handleToDateChange}
+                guests={guests}
+                setGuests={setGuests}
+              />
             )}
             <Snackbar
               anchorOrigin={{
