@@ -46,10 +46,10 @@ const Newtab = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const createMeetOnShortcut = () => {
+    // Chrome api to create meeting on shortcut (Listen to all message send from Background js)
     window.chrome.runtime.onMessage.addListener(
       (message, sender, sendResponse) => {
         if (message.type === LOAD_MEET) {
-          // console.log(meetTitle, authToken);
           goTo(SharePage, { meetTitle });
           dispatch(
             createMeet({
@@ -66,6 +66,7 @@ const Newtab = () => {
   };
 
   const handleChangeUser = () => {
+    // Swith user by expiring cached token
     fetch(`${REVOKE_URL}${authToken}`).then(() => {
       chrome.identity.removeCachedAuthToken({ token: authToken }, () => {
         dispatch(setAuthToken(null));
@@ -91,16 +92,31 @@ const Newtab = () => {
     setMoreOptions((prev) => !prev);
     setGuests(initialGuests);
     if (moreOptions) {
+      // Reset form value from date and to date
       handleFromDateChange(null);
       handleToDateChange(null);
     } else {
-      const { start, end } = meetDuration(DEFAULT_MEET_DURATION);
+      const { start, end } = meetDuration(DEFAULT_MEET_DURATION());
       handleFromDateChange(start);
       handleToDateChange(end);
     }
   };
 
   const createMeeting = () => {
+    if (moreOptions) {
+      if (!fromDate) {
+        setErrorMsg('From Date is required');
+        setOpen(true);
+        return;
+      }
+
+      if (!toDate) {
+        setErrorMsg('To Date is required');
+        setOpen(true);
+        return;
+      }
+    }
+
     // Validations
     if (new Date(fromDate) > new Date(toDate)) {
       setErrorMsg('From Date is Greater');

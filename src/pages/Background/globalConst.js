@@ -1,4 +1,5 @@
-export const DEFAULT_MEET_DURATION = 30;
+export const DEFAULT_MEET_DURATION = () =>
+  localStorage.getItem('DEFAULT_MEET_DURATION') || 30;
 export const REVOKE_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 export const USER_INFO_URL =
   'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=';

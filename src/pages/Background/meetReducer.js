@@ -44,6 +44,7 @@ export const meetReducer = (state = initialState, { type, payload }) => {
 const getTimeZone = () => dayjs.tz.guess();
 const generateRandomRequestId = () => Math.random().toString(36).substring(7);
 
+// CreateMeet could be used for both immediate meet and to schedule meet
 export const createMeet = ({
   meetTitle,
   copy,
@@ -53,7 +54,7 @@ export const createMeet = ({
 }) => async (dispatch, getState) => {
   dispatch({ type: LOADING });
 
-  const { start, end } = meetDuration(DEFAULT_MEET_DURATION);
+  const { start, end } = meetDuration(DEFAULT_MEET_DURATION());
 
   const event = {
     summary: meetTitle || '(No Title)',
@@ -99,6 +100,7 @@ export const createMeet = ({
   }
 };
 
+// First get user toke via chrome api and then google api to fetch user profile pic and email
 export const getUserInfo = () => async (dispatch, getState) => {
   chrome.identity.getAuthToken({ interactive: true }, async function (token) {
     dispatch(setAuthToken(token));
@@ -111,6 +113,7 @@ export const getUserInfo = () => async (dispatch, getState) => {
   });
 };
 
+// To get start & end time of meeeting
 export function meetDuration(mins) {
   return {
     start: dayjs().toISOString(),
@@ -118,6 +121,7 @@ export function meetDuration(mins) {
   };
 }
 
+// General copy fucntion to copy to clipboard
 export function copyToClipBoard(hangoutLink) {
   navigator.clipboard
     .writeText(hangoutLink)

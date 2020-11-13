@@ -46,6 +46,7 @@ const ChipInput = ({ state, setState }) => {
     setState({ ...state, items: state.items.filter((i) => i !== item) });
   };
 
+  // Extract only emails from clipboard
   const handlePaste = (evt) => {
     evt.preventDefault();
 
@@ -53,6 +54,7 @@ const ChipInput = ({ state, setState }) => {
     const emails = paste.match(/[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/g);
 
     if (emails) {
+      // Filters email automatically if the email is already added
       const toBeAdded = emails.filter((email) => !isInList(email));
 
       setState({
@@ -62,6 +64,7 @@ const ChipInput = ({ state, setState }) => {
     }
   };
 
+  // Validation if emails
   const isValid = (email) => {
     let error = null;
     if (isInList(email)) {

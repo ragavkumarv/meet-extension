@@ -5,10 +5,10 @@ import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
 import { copyToClipBoard } from '../Background/meetReducer';
 
-export function SuccessPage({ meetLink, copyToClipBoard }) {
+export function SuccessPage({ meetLink }) {
   return (
     <>
-      <p>Successfully meeting is created at below link</p>
+      <p>Successfully meeting is created at the below link</p>
 
       <Tooltip title="Copy" placement="bottom">
         <Chip
