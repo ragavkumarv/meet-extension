@@ -11,6 +11,11 @@ import {
   SET_MEET_LINK,
   SET_USER_INFO,
 } from './actions';
+import {
+  DEFAULT_MEET_DURATION,
+  USER_INFO_URL,
+  CREATE_MEET_URL,
+} from './globalConst';
 
 const initialState = {
   meetLink: '',
@@ -48,7 +53,7 @@ export const createMeet = ({
 }) => async (dispatch, getState) => {
   dispatch({ type: LOADING });
 
-  const { start, end } = meetDuration(30);
+  const { start, end } = meetDuration(DEFAULT_MEET_DURATION);
 
   const event = {
     summary: meetTitle || '(No Title)',
@@ -69,17 +74,14 @@ export const createMeet = ({
   };
 
   try {
-    const { hangoutLink } = await fetch(
-      'https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendNotifications=true',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${getState().authToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(event),
-      }
-    )
+    const { hangoutLink } = await fetch(CREATE_MEET_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${getState().authToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
       .then((response) => response.json())
       .then(function (data) {
         console.log(data);
@@ -101,9 +103,9 @@ export const getUserInfo = () => async (dispatch, getState) => {
   chrome.identity.getAuthToken({ interactive: true }, async function (token) {
     dispatch(setAuthToken(token));
 
-    const info = await fetch(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
-    ).then((res) => res.json());
+    const info = await fetch(`${USER_INFO_URL}${token}`).then((res) =>
+      res.json()
+    );
 
     dispatch(setUserInfo(info));
   });
@@ -116,7 +118,7 @@ export function meetDuration(mins) {
   };
 }
 
-function copyToClipBoard(hangoutLink) {
+export function copyToClipBoard(hangoutLink) {
   navigator.clipboard
     .writeText(hangoutLink)
     .then(() => {

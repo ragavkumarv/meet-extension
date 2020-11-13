@@ -2,6 +2,12 @@
 
 ## Features
 
+1. Create google meet and share url
+2. Schedule google meet and initmate guests
+3. Easy to share meet link in popular social media
+4. Easily switch accounts to schedule meeting
+5. Press Alt+M or Opt+M (Displays extension) then Alt+C or Opt+C (create and copy extension to clipboard)
+
 ## Installing and Running
 
 ### Procedures:

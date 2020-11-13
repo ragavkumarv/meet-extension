@@ -18,18 +18,17 @@ import {
   meetDuration,
 } from '../Background/meetReducer';
 import DetailedMeetForm from './DetailedMeetForm';
-import './Newtab.css';
-import './Newtab.scss';
 import { SharePage } from './SharePage';
 import UserProfilePic from './UserProfilePic';
 import Grow from '@material-ui/core/Grow';
+import './Newtab.scss';
+import { DEFAULT_MEET_DURATION, REVOKE_URL } from '../Background/globalConst';
 
 const initialGuests = {
   items: [],
   value: '',
   error: null,
 };
-const defaultMeetDuration = 30; // in mins
 
 const Newtab = () => {
   const dispatch = useDispatch();
@@ -64,9 +63,7 @@ const Newtab = () => {
   };
 
   const handleChangeUser = () => {
-    fetch(
-      'https://accounts.google.com/o/oauth2/revoke?token=' + authToken
-    ).then(() => {
+    fetch(`${REVOKE_URL}${authToken}`).then(() => {
       chrome.identity.removeCachedAuthToken({ token: authToken }, () => {
         dispatch(setAuthToken(null));
         dispatch(getUserInfo());
@@ -94,13 +91,13 @@ const Newtab = () => {
       handleFromDateChange(null);
       handleToDateChange(null);
     } else {
-      const { start, end } = meetDuration(defaultMeetDuration);
+      const { start, end } = meetDuration(DEFAULT_MEET_DURATION);
       handleFromDateChange(start);
       handleToDateChange(end);
     }
   };
 
-  const createMeet = () => {
+  const createMeeting = () => {
     // Validations
     if (new Date(fromDate) > new Date(toDate)) {
       setErrorMsg('From Date is Greater');
@@ -166,7 +163,7 @@ const Newtab = () => {
               </Button>
               <Button
                 color="primary"
-                onClick={createMeet}
+                onClick={createMeeting}
                 style={{ marginLeft: 'auto' }}
               >
                 Meet now
