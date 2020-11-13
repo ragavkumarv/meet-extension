@@ -3,6 +3,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import React from 'react';
 import { goBack } from 'react-chrome-extension-router';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useSelector } from 'react-redux';
 import {
   FacebookIcon,
@@ -19,6 +20,11 @@ import {
 import SuccessOrError from './SuccessOrError';
 import './SharePage.scss';
 import Collapse from '@material-ui/core/Collapse';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import { copyToClipBoard } from '../Background/meetReducer';
+import Chip from '@material-ui/core/Chip';
+import Avatar from '@material-ui/core/Avatar';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 export function SharePage({ meetTitle }) {
   const meetLink = useSelector((state) => state.meetLink);
@@ -31,7 +37,31 @@ export function SharePage({ meetTitle }) {
     <>
       <CardContent className="content">
         <SuccessOrError status={status} />
-        <Button color="secondary" onClick={goBack}>
+        {status === 'success' && (
+          <>
+            <p>Successfully meeting is created at below link</p>
+
+            <Tooltip title="Copy" placement="bottom">
+              <Chip
+                color="primary"
+                avatar={
+                  <Avatar>
+                    <AssignmentIcon />
+                  </Avatar>
+                }
+                label={meetLink}
+                clickable
+                onClick={() => copyToClipBoard(meetLink)}
+              />
+            </Tooltip>
+          </>
+        )}
+        {status === 'failed' && <p>Please go back and retry</p>}
+        <Button
+          color="primary"
+          onClick={goBack}
+          startIcon={<KeyboardBackspaceIcon />}
+        >
           Go Back
         </Button>
       </CardContent>
