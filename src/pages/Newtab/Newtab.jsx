@@ -26,6 +26,7 @@ import { DEFAULT_MEET_DURATION, REVOKE_URL } from '../Background/globalConst';
 import DuoIcon from '@material-ui/icons/Duo';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DefaultOptions from './DefaultOptions';
 
 const initialGuests = {
   items: [],
@@ -148,7 +149,10 @@ const Newtab = () => {
               />
             }
             action={
-              <IconButton aria-label="settings">
+              <IconButton
+                onClick={() => goTo(DefaultOptions)}
+                aria-label="settings"
+              >
                 <SettingsIcon />
               </IconButton>
             }
