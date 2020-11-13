@@ -23,6 +23,9 @@ import UserProfilePic from './UserProfilePic';
 import Grow from '@material-ui/core/Grow';
 import './Newtab.scss';
 import { DEFAULT_MEET_DURATION, REVOKE_URL } from '../Background/globalConst';
+import DuoIcon from '@material-ui/icons/Duo';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const initialGuests = {
   items: [],
@@ -158,15 +161,22 @@ const Newtab = () => {
               )}
             </CardContent>
             <CardActions>
-              <Button color="secondary" onClick={toggleMoreOptions}>
+              <Button
+                startIcon={
+                  !moreOptions ? <ExpandMoreIcon /> : <ExpandLessIcon />
+                }
+                color="secondary"
+                onClick={toggleMoreOptions}
+              >
                 {!moreOptions ? 'More' : 'Less'} Options
               </Button>
               <Button
+                startIcon={<DuoIcon />}
                 color="primary"
                 onClick={createMeeting}
                 style={{ marginLeft: 'auto' }}
               >
-                Meet now
+                Meet
               </Button>
             </CardActions>
           </Router>

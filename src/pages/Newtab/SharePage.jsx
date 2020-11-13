@@ -1,9 +1,10 @@
 import { Button } from '@material-ui/core';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Collapse from '@material-ui/core/Collapse';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import React from 'react';
 import { goBack } from 'react-chrome-extension-router';
-import Tooltip from '@material-ui/core/Tooltip';
 import { useSelector } from 'react-redux';
 import {
   FacebookIcon,
@@ -17,14 +18,9 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from 'react-share';
-import SuccessOrError from './SuccessOrError';
 import './SharePage.scss';
-import Collapse from '@material-ui/core/Collapse';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import { copyToClipBoard } from '../Background/meetReducer';
-import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import SuccessOrError from './SuccessOrError';
+import { SuccessPage } from './SuccessPage';
 
 export function SharePage({ meetTitle }) {
   const meetLink = useSelector((state) => state.meetLink);
@@ -37,25 +33,7 @@ export function SharePage({ meetTitle }) {
     <>
       <CardContent className="content">
         <SuccessOrError status={status} />
-        {status === 'success' && (
-          <>
-            <p>Successfully meeting is created at below link</p>
-
-            <Tooltip title="Copy" placement="bottom">
-              <Chip
-                color="primary"
-                avatar={
-                  <Avatar>
-                    <AssignmentIcon />
-                  </Avatar>
-                }
-                label={meetLink}
-                clickable
-                onClick={() => copyToClipBoard(meetLink)}
-              />
-            </Tooltip>
-          </>
-        )}
+        {status === 'success' && <SuccessPage meetLink={meetLink} />}
         {status === 'failed' && <p>Please go back and retry</p>}
         <Button
           color="primary"
