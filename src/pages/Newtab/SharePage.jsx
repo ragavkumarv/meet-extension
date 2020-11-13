@@ -16,30 +16,45 @@ import {
 export function SharePage({ meetTitle, meetLink }) {
   return (
     <>
-      <WhatsappShareButton title={meetTitle} url={meetLink}>
-        <IconButton aria-label="facebook">
-          <WhatsappIcon size={32} round={true} />
-        </IconButton>
+      <WhatsappShareButton
+        className="MuiButtonBase-root MuiIconButton-root"
+        title={meetTitle}
+        url={meetLink}
+        resetButtonStyle={false}
+      >
+        <WhatsappIcon size={32} round={true} />
       </WhatsappShareButton>
-      <LinkedinShareButton title={meetTitle} url={meetLink}>
-        <IconButton aria-label="facebook">
-          <LinkedinIcon size={32} round={true} />
-        </IconButton>
+      <LinkedinShareButton
+        className="MuiButtonBase-root MuiIconButton-root"
+        resetButtonStyle={false}
+        title={meetTitle}
+        url={meetLink}
+      >
+        <LinkedinIcon size={32} round={true} />
       </LinkedinShareButton>
-      <TwitterShareButton title={meetTitle} url={meetLink}>
-        <IconButton aria-label="facebook">
-          <TwitterIcon size={32} round={true} />
-        </IconButton>
+      <TwitterShareButton
+        className="MuiButtonBase-root MuiIconButton-root"
+        resetButtonStyle={false}
+        title={meetTitle}
+        url={meetLink}
+      >
+        <TwitterIcon size={32} round={true} />
       </TwitterShareButton>
-      <PinterestShareButton title={meetTitle} url={meetLink}>
-        <IconButton aria-label="facebook">
-          <PinterestIcon size={32} round={true} />
-        </IconButton>
+      <PinterestShareButton
+        className="MuiButtonBase-root MuiIconButton-root"
+        resetButtonStyle={false}
+        title={meetTitle}
+        url={meetLink}
+      >
+        <PinterestIcon size={32} round={true} />
       </PinterestShareButton>
-      <FacebookShareButton title={meetTitle} url={meetLink}>
-        <IconButton aria-label="facebook">
-          <FacebookIcon size={32} round={true} />
-        </IconButton>
+      <FacebookShareButton
+        className="MuiButtonBase-root MuiIconButton-root"
+        resetButtonStyle={false}
+        title={meetTitle}
+        url={meetLink}
+      >
+        <FacebookIcon size={32} round={true} />
       </FacebookShareButton>
     </>
   );
