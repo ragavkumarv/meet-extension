@@ -17,19 +17,20 @@ const initialState = {
   meetLink: '',
   authToken: '',
   user: { email: '', picture: '' },
+  status: 'loading',
 };
 dayjs.extend(timezone);
 
 export const meetReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case LOADING:
-      return { ...state, isLoading: true };
+      return { ...state, status: 'loading' };
     case SET_AUTH_TOKEN:
-      return { ...state, authToken: payload, isLoading: false };
+      return { ...state, authToken: payload };
     case SET_MEET_LINK:
-      return { ...state, meetLink: payload, isLoading: false };
+      return { ...state, meetLink: payload, status: 'success' };
     case SET_ERROR_MSG:
-      return { ...state, meetLink: payload, isLoading: false };
+      return { ...state, meetLink: payload, status: 'failed' };
     case SET_USER_INFO:
       return { ...state, user: payload };
     default:
