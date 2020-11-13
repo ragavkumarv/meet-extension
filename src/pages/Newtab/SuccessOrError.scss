@@ -15,7 +15,6 @@ $cross-color: $brand-failure;
 $cross-offset: ($check-height / $sin45) - $check-height;
 
 .circle-loader {
-  margin: 0 0 30px 10px;
   border: $symbol-thickness solid rgba(0, 0, 0, 0.2);
   border-left-color: $check-color;
   animation-name: loader-spin;

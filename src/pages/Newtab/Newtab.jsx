@@ -4,12 +4,12 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useEffect, useState } from 'react';
+import { goTo, Router } from 'react-chrome-extension-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_MEET, setAuthToken } from '../Background/actions';
 import {
@@ -18,9 +18,10 @@ import {
   meetDuration,
 } from '../Background/meetReducer';
 import DetailedMeetForm from './DetailedMeetForm';
-import UserProfilePic from './UserProfilePic';
 import './Newtab.css';
 import './Newtab.scss';
+import { SharePage } from './SharePage';
+import UserProfilePic from './UserProfilePic';
 
 const initialGuests = {
   items: [],
@@ -41,6 +42,7 @@ const Newtab = () => {
   const [toDate, handleToDateChange] = useState();
   const userInfo = useSelector((state) => state.user);
   const [guests, setGuests] = useState(initialGuests);
+  const status = useSelector((state) => state.status);
 
   const createMeetOnShortcut = () => {
     window.chrome.runtime.onMessage.addListener(
@@ -120,46 +122,49 @@ const Newtab = () => {
             }
             title={userInfo.email}
           />
-          <CardContent className="wrapper">
-            <TextField
-              label="Title"
-              type="input"
-              value={meetTitle}
-              className="form__title"
-              onChange={(e) => setMeetTitle(e.target.value)}
-            />
-            {moreOptions && (
-              <DetailedMeetForm
-                fromDate={fromDate}
-                handleFromDateChange={handleFromDateChange}
-                toDate={toDate}
-                handleToDateChange={handleToDateChange}
-                guests={guests}
-                setGuests={setGuests}
+          <Router>
+            <CardContent className="wrapper">
+              <TextField
+                label="Title"
+                type="input"
+                value={meetTitle}
+                className="form__title"
+                onChange={(e) => setMeetTitle(e.target.value)}
               />
-            )}
-          </CardContent>
-          <CardActions>
-            <Button color="secondary" onClick={toggleMoreOptions}>
-              {!moreOptions ? 'More' : 'Less'} Options
-            </Button>
-            <Button
-              color="primary"
-              onClick={() =>
-                dispatch(
-                  createMeet({
-                    meetTitle,
-                    fromDate,
-                    toDate,
-                    attendees: guests.items,
-                  })
-                )
-              }
-              style={{ marginLeft: 'auto' }}
-            >
-              {isLoading ? <CircularProgress /> : 'Meet now'}
-            </Button>
-          </CardActions>
+              {moreOptions && (
+                <DetailedMeetForm
+                  fromDate={fromDate}
+                  handleFromDateChange={handleFromDateChange}
+                  toDate={toDate}
+                  handleToDateChange={handleToDateChange}
+                  guests={guests}
+                  setGuests={setGuests}
+                />
+              )}
+            </CardContent>
+            <CardActions>
+              <Button color="secondary" onClick={toggleMoreOptions}>
+                {!moreOptions ? 'More' : 'Less'} Options
+              </Button>
+              <Button
+                color="primary"
+                onClick={() => {
+                  goTo(SharePage, { meetTitle });
+                  dispatch(
+                    createMeet({
+                      meetTitle,
+                      fromDate,
+                      toDate,
+                      attendees: guests.items,
+                    })
+                  );
+                }}
+                style={{ marginLeft: 'auto' }}
+              >
+                Meet now
+              </Button>
+            </CardActions>
+          </Router>
         </Card>
       </div>
       <Snackbar
