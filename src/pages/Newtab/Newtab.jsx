@@ -22,6 +22,7 @@ import './Newtab.css';
 import './Newtab.scss';
 import { SharePage } from './SharePage';
 import UserProfilePic from './UserProfilePic';
+import Grow from '@material-ui/core/Grow';
 
 const initialGuests = {
   items: [],
@@ -48,7 +49,8 @@ const Newtab = () => {
     window.chrome.runtime.onMessage.addListener(
       (message, sender, sendResponse) => {
         if (message.type === LOAD_MEET) {
-          console.log(meetTitle, authToken);
+          // console.log(meetTitle, authToken);
+          goTo(SharePage, { meetTitle });
           dispatch(
             createMeet({
               meetTitle,
@@ -132,14 +134,16 @@ const Newtab = () => {
                 onChange={(e) => setMeetTitle(e.target.value)}
               />
               {moreOptions && (
-                <DetailedMeetForm
-                  fromDate={fromDate}
-                  handleFromDateChange={handleFromDateChange}
-                  toDate={toDate}
-                  handleToDateChange={handleToDateChange}
-                  guests={guests}
-                  setGuests={setGuests}
-                />
+                <Grow in={moreOptions}>
+                  <DetailedMeetForm
+                    fromDate={fromDate}
+                    handleFromDateChange={handleFromDateChange}
+                    toDate={toDate}
+                    handleToDateChange={handleToDateChange}
+                    guests={guests}
+                    setGuests={setGuests}
+                  />
+                </Grow>
               )}
             </CardContent>
             <CardActions>
