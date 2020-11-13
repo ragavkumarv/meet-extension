@@ -13,7 +13,6 @@ import {
 } from './actions';
 
 const initialState = {
-  isLoading: false,
   meetLink: '',
   authToken: '',
   user: { email: '', picture: '' },

@@ -9,29 +9,34 @@ const DetailedMeetForm = ({
   guests,
   setGuests,
 }) => {
+  const setting = {
+    variant: 'inline',
+    ampm: true,
+    format: 'MMM DD, YYYY hh:mma',
+  };
   return (
     <>
       <KeyboardDateTimePicker
-        variant="inline"
-        ampm={true}
+        variant={setting.variant}
+        ampm={setting.ampm}
         label="From"
         value={fromDate}
         onChange={handleFromDateChange}
         onError={console.log}
         disablePast
         required
-        format="MMM DD, YYYY HH:mma"
+        format={setting.format}
       />
       <KeyboardDateTimePicker
-        variant="inline"
-        ampm={true}
+        variant={setting.variant}
+        ampm={setting.ampm}
         label="To"
         value={toDate}
         onChange={handleToDateChange}
         onError={console.log}
         disablePast
         required
-        format="MMM DD, YYYY HH:mma"
+        format={setting.format}
       />
       <ChipInput state={guests} setState={setGuests} />
     </>

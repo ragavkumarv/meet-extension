@@ -1,26 +1,9 @@
 .App {
-  /* text-align: center;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin); */
-  /* margin: auto; */
   min-width: 30vw;
   width: max-content;
-  /* max-width: 50vw; */
 }
 
 .App-header {
-  /* background-color: #282c34; */
-  /* min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin); */
-  /* color: rgb(187, 179, 179); */
   width: 10rem;
   display: grid;
 }

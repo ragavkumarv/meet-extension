@@ -33,17 +33,15 @@ const defaultMeetDuration = 30; // in mins
 
 const Newtab = () => {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const meetLink = useSelector((state) => state.meetLink);
   const authToken = useSelector((state) => state.authToken);
-  const isLoading = useSelector((state) => state.isLoading);
+  const userInfo = useSelector((state) => state.user);
+  const [open, setOpen] = useState(false);
   const [meetTitle, setMeetTitle] = useState('Meeting');
   const [moreOptions, setMoreOptions] = useState(false);
   const [fromDate, handleFromDateChange] = useState();
   const [toDate, handleToDateChange] = useState();
-  const userInfo = useSelector((state) => state.user);
   const [guests, setGuests] = useState(initialGuests);
-  const status = useSelector((state) => state.status);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const createMeetOnShortcut = () => {
     window.chrome.runtime.onMessage.addListener(
@@ -88,10 +86,6 @@ const Newtab = () => {
     dispatch(getUserInfo());
   }, []);
 
-  useEffect(() => {
-    if (meetLink) setOpen(true);
-  }, [meetLink]);
-
   const toggleMoreOptions = () => {
     console.log(guests);
     setMoreOptions((prev) => !prev);
@@ -104,6 +98,26 @@ const Newtab = () => {
       handleFromDateChange(start);
       handleToDateChange(end);
     }
+  };
+
+  const createMeet = () => {
+    // Validations
+    if (new Date(fromDate) > new Date(toDate)) {
+      setErrorMsg('From Date is Greater');
+      setOpen(true);
+      return;
+    }
+
+    // Shows first Loader -> Success or Error
+    goTo(SharePage, { meetTitle });
+    dispatch(
+      createMeet({
+        meetTitle,
+        fromDate,
+        toDate,
+        attendees: guests.items,
+      })
+    );
   };
 
   return (
@@ -152,17 +166,7 @@ const Newtab = () => {
               </Button>
               <Button
                 color="primary"
-                onClick={() => {
-                  goTo(SharePage, { meetTitle });
-                  dispatch(
-                    createMeet({
-                      meetTitle,
-                      fromDate,
-                      toDate,
-                      attendees: guests.items,
-                    })
-                  );
-                }}
+                onClick={createMeet}
                 style={{ marginLeft: 'auto' }}
               >
                 Meet now
@@ -179,7 +183,7 @@ const Newtab = () => {
         open={open}
         autoHideDuration={1000}
         onClose={handleClose}
-        message={meetLink}
+        message={errorMsg}
       />
     </MuiPickersUtilsProvider>
   );
