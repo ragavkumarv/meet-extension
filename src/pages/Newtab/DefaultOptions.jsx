@@ -2,13 +2,14 @@ import { Button, TextField } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import React, { useState } from 'react';
 import { goBack } from 'react-chrome-extension-router';
+import CardContent from '@material-ui/core/CardContent';
 
 export default function DefaultOptions() {
   const [state, setstate] = useState(
     localStorage.getItem('DEFAULT_MEET_DURATION') || 30
   );
   return (
-    <>
+    <CardContent>
       <TextField
         label="Default duration"
         type="input"
@@ -27,6 +28,6 @@ export default function DefaultOptions() {
       >
         Go Back
       </Button>
-    </>
+    </CardContent>
   );
 }
